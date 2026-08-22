@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { demoPersonalFeatures, type PersonalFeatures } from './personalData'
 import { buildStyleGanRequest, generateStyleGanFrame, getStyleGanHealth, type StyleGanHealth } from './styleGanClient'
 import type { VisualStateId } from './visualStates'
+import type { VisualMode } from './visualModes'
 
 const stateIndex: Record<VisualStateId, number> = {
   stability: 0,
@@ -19,12 +20,14 @@ export function StyleGanLayer({
   state,
   intensity,
   personalFeatures,
+  mode,
   enabled,
   onStatus,
 }: {
   state: VisualStateId
   intensity: number
   personalFeatures: PersonalFeatures | null
+  mode: VisualMode
   enabled: boolean
   onStatus: (status: ModelLayerStatus) => void
 }) {
@@ -36,10 +39,13 @@ export function StyleGanLayer({
     () => personalFeatures ?? demoPersonalFeatures(stateIndex[state] * 1.7, stateIndex[state]),
     [personalFeatures, state],
   )
+  const shouldUseLiveModel = enabled && !isStaticPublicBuild && mode.id === 'place'
+
+  useEffect(() => setVideoReady(false), [mode.id])
 
   useEffect(() => {
-    if (!enabled || isStaticPublicBuild) {
-      onStatus({ status: 'ready', backend: isStaticPublicBuild ? 'pre-rendered-video' : 'procedural-fallback', active: false })
+    if (!shouldUseLiveModel) {
+      onStatus({ status: 'ready', backend: 'pre-rendered-video', model: mode.model, active: false })
       return
     }
     let cancelled = false
@@ -56,10 +62,10 @@ export function StyleGanLayer({
         onStatus({ ...next, active: false })
       })
     return () => { cancelled = true }
-  }, [enabled, onStatus])
+  }, [mode.model, onStatus, shouldUseLiveModel])
 
   useEffect(() => {
-    if (!enabled || health.status !== 'ready') return
+    if (!shouldUseLiveModel || health.status !== 'ready') return
     let cancelled = false
     const generate = async () => {
       try {
@@ -77,7 +83,7 @@ export function StyleGanLayer({
     }
     void generate()
     return () => { cancelled = true }
-  }, [enabled, features, health, intensity, onStatus, state])
+  }, [features, health, intensity, onStatus, shouldUseLiveModel, state])
 
   useEffect(() => () => {
     if (currentFrame) URL.revokeObjectURL(currentFrame)
@@ -87,19 +93,21 @@ export function StyleGanLayer({
     <div
       className={`stylegan-field ${videoReady || currentFrame ? 'has-frame' : ''}`}
       data-testid="stylegan-layer"
-      data-renderer="stylegan2-ada"
-      data-model={health.model ?? 'unavailable'}
+      data-renderer={mode.renderer}
+      data-model={health.model ?? mode.model}
       data-device={health.device ?? 'unavailable'}
-      data-render-mode={health.render_mode ?? 'unavailable'}
+      data-render-mode={health.render_mode ?? 'latent-structure'}
+      data-class-count={mode.classes.length}
       data-display-mode="latent-loop-video"
       data-active={Boolean(enabled && (videoReady || currentFrame))}
       aria-hidden="true"
     >
       {enabled && (
         <video
+          key={mode.id}
           className="latent-loop-video"
-          src={`${import.meta.env.BASE_URL}assets/latent-landscape-loop.mp4`}
-          poster={currentFrame ?? undefined}
+          src={`${import.meta.env.BASE_URL}${mode.video}`}
+          poster={mode.id === 'place' ? currentFrame ?? undefined : undefined}
           autoPlay
           muted
           loop
@@ -109,6 +117,7 @@ export function StyleGanLayer({
           onError={() => setVideoReady(false)}
           data-testid="latent-loop-video"
           data-source="stylegan-latent-loop"
+          data-mode={mode.id}
           data-effects="none"
           data-frame-count="144"
         />

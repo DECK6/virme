@@ -1,18 +1,21 @@
 import { useCallback, useMemo, useState } from 'react'
 import { StyleGanLayer, type ModelLayerStatus } from './StyleGanLayer'
 import { portraitAsset, visualStates } from './visualStates'
+import { visualModes, type VisualModeId } from './visualModes'
 import './styles.css'
 
 export default function App() {
   const state = visualStates[0]
+  const [modeId, setModeId] = useState<VisualModeId>('place')
+  const mode = visualModes.find((candidate) => candidate.id === modeId) ?? visualModes[0]
   const [modelStatus, setModelStatus] = useState<ModelLayerStatus>({ status: 'loading', active: false })
   const [portraitVisible, setPortraitVisible] = useState(false)
   const handleModelStatus = useCallback((status: ModelLayerStatus) => setModelStatus(status), [])
-  const backendLabel = modelStatus.active
+  const backendLabel = mode.id === 'place' && modelStatus.active
     ? `${modelStatus.model ?? 'STYLEGAN2'} LATENT STRUCTURE · ${(modelStatus.device ?? 'MAC').toUpperCase()}`
-    : modelStatus.status === 'loading'
+    : mode.id === 'place' && modelStatus.status === 'loading'
       ? 'STYLEGAN2 · MAC LOADING'
-      : 'STYLEGAN2 · VIDEO FALLBACK'
+      : `${mode.model} · ${mode.subject}`
 
   const portraitStyle = useMemo(
     () =>
@@ -21,16 +24,16 @@ export default function App() {
         '--portrait-scale': state.portrait.scale,
         '--portrait-contrast': state.portrait.contrast,
         '--portrait-saturate': state.portrait.saturate,
-        '--state-color': state.color,
-        '--state-accent': state.accent,
+        '--state-color': mode.color,
+        '--state-accent': mode.accent,
         '--dissolution': state.controls.dissolution,
         '--shear': state.controls.shear,
       }) as React.CSSProperties,
-    [state],
+    [mode, state],
   )
 
   return (
-    <main className="app" style={{ '--state-color': state.color, '--state-accent': state.accent } as React.CSSProperties}>
+    <main className="app" style={{ '--state-color': mode.color, '--state-accent': mode.accent } as React.CSSProperties}>
       <header className="header">
         <a className="wordmark" href="#stage" aria-label="버추어미 잠재공간 MVP">
           <span className="mark" aria-hidden="true"><i /><i /><i /></span>
@@ -41,17 +44,25 @@ export default function App() {
       </header>
 
       <section className="workspace single-example" id="stage">
-        <nav className="state-nav" aria-label="단일 시각 예시">
-          <div className="eyebrow">SINGLE CONDITION</div>
-          <h1>하나의<br />{' '}잠재 장면</h1>
-          <p className="intro">하나의 잠재 풍경 안을 12초 동안 연속적으로 이동합니다.</p>
+        <nav className="state-nav" aria-label="잠재 비주얼 모드">
+          <div className="eyebrow">THREE LATENT MODES</div>
+          <h1>{mode.koLabel}의<br />{' '}잠재 장면</h1>
+          <p className="intro">{mode.description}</p>
           <div className="reference-note">LUCID SONIC DREAMS · REAL STYLEGAN LATENT ROUTE</div>
-          <div className="state-list">
-            <div className="state-button active" aria-current="true">
-              <span>01</span>
-              <strong>{state.label}</strong>
-              <small>{state.koLabel}</small>
-            </div>
+          <div className="state-list mode-list">
+            {visualModes.map((candidate) => (
+              <button
+                className={`state-button mode-button ${candidate.id === mode.id ? 'active' : ''}`}
+                type="button"
+                aria-current={candidate.id === mode.id ? 'true' : undefined}
+                onClick={() => setModeId(candidate.id)}
+                key={candidate.id}
+              >
+                <span>{candidate.index}</span>
+                <strong>{candidate.label}</strong>
+                <small>{candidate.koLabel}</small>
+              </button>
+            ))}
           </div>
           <button
             className={`portrait-toggle ${portraitVisible ? 'active' : ''}`}
@@ -65,13 +76,13 @@ export default function App() {
           </button>
           <div className="single-example-meta">
             <span>LOOP</span><strong>12 SEC</strong>
-            <span>MODEL</span><strong>STYLEGAN2</strong>
-            <span>DISPLAY</span><strong>LATENT ONLY</strong>
+            <span>MODEL</span><strong>{mode.model}</strong>
+            <span>RANGE</span><strong>{mode.subject}</strong>
           </div>
         </nav>
 
         <div
-          className={`portrait-stage state-${state.id} route-stylegan`}
+          className={`portrait-stage mode-${mode.id} route-stylegan`}
           style={portraitStyle}
           data-testid="portrait-stage"
           data-example-count="1"
@@ -80,6 +91,7 @@ export default function App() {
             state={state.id}
             intensity={0.86}
             personalFeatures={null}
+            mode={mode}
             enabled
             onStatus={handleModelStatus}
           />
@@ -98,13 +110,13 @@ export default function App() {
             </figure>
           )}
           <div className="state-caption">
-            <span>01 / 01</span>
+            <span>{mode.index} / 03</span>
             <div>
-              <p>LATENT LANDSCAPE</p>
-              <strong>잠재 장면</strong>
+              <p>{mode.subject}</p>
+              <strong>{mode.koLabel} 모드</strong>
             </div>
           </div>
-          <p className="state-description">하나의 잠재 풍경이 끊김 없이 변합니다. 초상은 선택적으로 겹쳐 볼 수 있습니다.</p>
+          <p className="state-description">{mode.description} 초상은 선택적으로 겹쳐 볼 수 있습니다.</p>
           <div className="model-chip">{backendLabel}</div>
         </div>
       </section>

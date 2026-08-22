@@ -1,6 +1,6 @@
 # Virtueme Generative Portrait MVP
 
-개인 데이터로 이동하는 StyleGAN 잠재공간을 보여주는 Virtueme 생성 비주얼 연구입니다. 현재 공개 MVP는 하나의 잠재 장면을 12초 폐루프 영상으로 보여주며, 중앙 초상은 화면에서 선택적으로 켜고 끌 수 있습니다.
+개인 데이터로 이동하는 StyleGAN 잠재공간을 보여주는 Virtueme 생성 비주얼 연구입니다. 공개 POC는 장소·사물·상황의 세 모드를 각각 12초 폐루프 영상으로 보여주며, 중앙 초상은 화면에서 선택적으로 켜고 끌 수 있습니다.
 
 공개 페이지: [dexa.art/virme](https://dexa.art/virme/)
 
@@ -27,7 +27,10 @@ bun run build:public
 ## Scope
 
 - 기본값 `OFF`인 선택형 중앙 초상 1개
-- 단일 `STABILITY` 예시와 하나의 잠재 풍경
+- `PLACE`·`OBJECT`·`SITUATION`으로 구분한 세 가지 잠재공간 모드
+- 장소는 기존 StyleGAN2 LSUN Church 건물 도메인으로 고정
+- 사물은 백팩·머그·접이식 의자·폴라로이드 카메라·벽시계·컵 등 여러 일상 사물 사이를 이동
+- 상황은 이발소·서점·식료품점·도서관·식당·무대·해변 등 여러 장면 사이를 이동
 - [Lucid Sonic Dreams](https://github.com/mikael-alafriz-deel/lucid-sonic-dreams)의 누적 latent controller 구조를 개인 데이터용으로 TypeScript 포팅
 - [Raspberry - Saje 레퍼런스 영상](https://www.youtube.com/watch?v=iEFqcMrszH0)의 고밀도 GAN 질감·프레임 용융감을 시각 기준으로 사용
 - 개인 데이터, 실제 StyleGAN2 생성 프레임, 사전 렌더 잠재 루프의 시각적 라우팅 MVP
@@ -50,11 +53,11 @@ bun run build:public
 
 ## Mac model runtime
 
-- 런타임: NVIDIA `stylegan2-ada-pytorch`
-- 현재 기본 체크포인트: NVIDIA StyleGAN2 LSUN Church `stylegan2-church-config-f.pkl`, 256×256. 사람 대신 건물·하늘·나무·길 같은 풍경의 잠재 구조를 사용한다.
+- 장소 런타임: NVIDIA `stylegan2-ada-pytorch`, LSUN Church `stylegan2-church-config-f.pkl`, 256×256
+- 사물·상황 런타임: `StyleGAN-XL` ImageNet 128×128 체크포인트. 클래스 조건과 latent를 함께 보간해 단일 대상이 아닌 여러 범주의 중간 영역을 만든다.
 - 장치: Apple Silicon `mps`, 지원되지 않는 연산만 CPU fallback
 - 렌더 모드: `latent-structure`; 여러 잠재점의 128×128 중간 RGB 합성 단계에서 공통 윤곽·차이·비선형 잔차를 추출하고 이를 명확한 면·능선 단계로 분절한다. 완성 이미지는 직접 노출하지 않는다.
-- 배경 모드: 다섯 잠재점을 smootherstep으로 폐루프 보간한 12초·144프레임 H.264 영상을 효과 없이 직접 재생한다. `bun run model:video`로 재생성한다.
+- 배경 모드: 잠재점을 폐루프 보간한 12초·144프레임 H.264 영상을 효과 없이 직접 재생한다. 장소는 `bun run model:video`, 사물·상황은 `bun run model:video:modes`로 재생성한다.
 - 실제 측정 smoke output: `generated/stylegan-mac-smoke.jpg`
 - 체크포인트 교체: `VIRTUEME_STYLEGAN_MODEL=/absolute/model.pkl bun run model:serve`
 
