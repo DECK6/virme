@@ -1,7 +1,60 @@
 import { expect, test } from '@playwright/test'
 
+async function openVisual(page: import('@playwright/test').Page) {
+  await page.getByRole('button', { name: /VISUAL 비주얼/ }).click()
+}
+
+test('selects novel, talk, and visual inside one page', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('.experience-nav button')).toHaveCount(3)
+  await expect(page.locator('main')).toHaveAttribute('data-experience-mode', 'novel')
+  await expect(page.getByTestId('novel-mode')).toBeVisible()
+  await expect(page.frameLocator('iframe[title="Storyseed 노벨 모드"]').getByRole('heading', { name: 'Storyseed' })).toBeVisible()
+
+  await page.getByRole('button', { name: /TALK 채팅/ }).click()
+  await expect(page.locator('main')).toHaveAttribute('data-experience-mode', 'talk')
+  await expect(page.getByTestId('talk-mode')).toBeVisible()
+  await expect(page.frameLocator('iframe[title="Storyseed 채팅 모드"]').getByRole('heading', { name: 'Storyseed Talk' })).toBeVisible()
+
+  await openVisual(page)
+  await expect(page.locator('main')).toHaveAttribute('data-experience-mode', 'visual')
+  await expect(page.getByTestId('visual-mode')).toBeVisible()
+})
+
+test('retains Storyseed interactions and state while switching modes', async ({ page }) => {
+  await page.goto('/')
+  const novel = page.frameLocator('iframe[title="Storyseed 노벨 모드"]')
+  await novel.getByPlaceholder(/아무 단어나 적어보세요/).fill('혼자')
+  await novel.getByRole('button', { name: 'Start' }).click()
+  await expect(novel.locator('.stitle')).toHaveText('키가 필요합니다')
+  await expect(novel.getByText('OpenRouter API 키가 있어야 동작합니다')).toBeVisible()
+
+  await page.getByRole('button', { name: /TALK 채팅/ }).click()
+  const talk = page.frameLocator('iframe[title="Storyseed 채팅 모드"]')
+  await talk.getByRole('button', { name: '요즘 나 어땠어?' }).click()
+  await expect(talk.locator('.m.user .bub')).toHaveText('요즘 나 어땠어?')
+  await expect(talk.locator('.m.ai .bub').last()).toContainText('연결이 잘 안 되네')
+
+  await page.getByRole('button', { name: /NOVEL 노벨/ }).click()
+  await expect(novel.getByPlaceholder(/아무 단어나 적어보세요/)).toHaveValue('혼자')
+  await expect(novel.locator('.stitle')).toHaveText('키가 필요합니다')
+})
+
+test('keeps all three experience choices available on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  const choices = page.locator('.experience-nav button')
+  await expect(choices).toHaveCount(3)
+  await expect(choices.first()).toBeInViewport()
+  await expect(choices.last()).toBeInViewport()
+  await expect(page.getByTestId('novel-mode')).toBeVisible()
+  await page.getByRole('button', { name: /TALK 채팅/ }).click()
+  await expect(page.frameLocator('iframe[title="Storyseed 채팅 모드"]').getByPlaceholder(/기록 속의 나에게/)).toBeVisible()
+})
+
 test('offers an off-by-default portrait toggle', async ({ page }) => {
   await page.goto('/')
+  await openVisual(page)
   const toggle = page.getByTestId('portrait-toggle')
 
   await expect(toggle).toHaveAttribute('aria-pressed', 'false')
@@ -19,6 +72,7 @@ test('offers an off-by-default portrait toggle', async ({ page }) => {
 
 test('switches between place, object, and situation latent-loop videos', async ({ page }) => {
   await page.goto('/')
+  await openVisual(page)
   await expect(page.getByText('LUCID SONIC DREAMS · REAL STYLEGAN LATENT ROUTE')).toBeVisible()
   await expect(page.locator('.control-panel')).toHaveCount(0)
   await expect(page.locator('.workspace')).toHaveClass(/single-example/)
@@ -50,6 +104,7 @@ test('switches between place, object, and situation latent-loop videos', async (
 
 test('keeps the selected mode stable when personal data events arrive', async ({ page }) => {
   await page.goto('/')
+  await openVisual(page)
   await page.getByRole('button', { name: /사물/ }).click()
   await page.evaluate(() => {
     window.dispatchEvent(new CustomEvent('virtueme:personal-data', {
@@ -62,6 +117,7 @@ test('keeps the selected mode stable when personal data events arrive', async ({
 
 test('uses a continuous latent flow without waveform, orbit, or voxel graphics', async ({ page }) => {
   await page.goto('/')
+  await openVisual(page)
   await expect(page.locator('.orbit')).toHaveCount(0)
   await expect(page.locator('.stage-grid')).toHaveCount(0)
   await expect(page.locator('.portrait-ghost')).toHaveCount(0)

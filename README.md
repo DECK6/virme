@@ -1,6 +1,6 @@
 # Virtueme Generative Portrait MVP
 
-개인 데이터로 이동하는 StyleGAN 잠재공간을 보여주는 Virtueme 생성 비주얼 연구입니다. 공개 POC는 장소·사물·상황의 세 모드를 각각 12초 폐루프 영상으로 보여주며, 중앙 초상은 화면에서 선택적으로 켜고 끌 수 있습니다.
+개인 기록을 노벨·채팅·비주얼의 세 모드로 경험하는 Virtueme 통합 POC입니다. 노벨과 채팅은 Storyseed 원본 기능을 포함하며, 비주얼은 장소·사물·상황의 잠재공간을 각각 12초 폐루프 영상으로 보여줍니다.
 
 공개 페이지: [dexa.art/virme](https://dexa.art/virme/)
 
@@ -26,6 +26,9 @@ bun run build:public
 
 ## Scope
 
+- 한 페이지 상단에서 전환하는 `NOVEL`·`TALK`·`VISUAL` 경험 모드
+- 노벨: 씨앗 단어, 장르, 90일 기록 합성, AI 집필, 오프라인 규칙 조립, 근거 기록과 컨텍스트 기능을 포함한 Storyseed v9
+- 채팅: 기록 기반 페르소나, 시작 질문, 대화 이력, 스트리밍 응답과 모델 설정을 포함한 Storyseed Talk v4
 - 기본값 `OFF`인 선택형 중앙 초상 1개
 - `PLACE`·`OBJECT`·`SITUATION`으로 구분한 세 가지 잠재공간 모드
 - 장소는 기존 StyleGAN2 LSUN Church 건물 도메인으로 고정
@@ -37,6 +40,16 @@ bun run build:public
 - Apple Silicon의 PyTorch MPS에서 로컬 추론하고 StyleGAN 모드에서는 생성 프레임 자체를 주 화면으로 표시
 
 중앙 초상은 잠재 영상과 분리된 선택 레이어이며, 사용자가 `PORTRAIT` 토글로 표시 여부를 정합니다.
+
+## Storyseed import and API safety
+
+원격 원본의 전체 HTML·CSS·JavaScript 기능을 로컬 공개 문서로 가져옵니다.
+
+```bash
+bun run storyseed:import -- /path/to/Storyseed_v9.html /path/to/Storyseed_Talk_v4.html
+```
+
+가져오기 스크립트는 공개 저장소에 포함하면 안 되는 `EMBED_KEY`만 빈 값으로 바꾸고 안내문을 공개 버전에 맞게 수정합니다. 모델 선택과 사용자의 OpenRouter 키 입력·브라우저 `localStorage` 저장 기능은 유지됩니다. 키 없이도 원본이 제공하는 로컬 기능과 안내 화면을 사용할 수 있습니다.
 
 ## Lucid Sonic Dreams mapping
 

@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { experienceModes, type ExperienceModeId } from './experienceModes'
 import { StyleGanLayer, type ModelLayerStatus } from './StyleGanLayer'
 import { portraitAsset, visualStates } from './visualStates'
 import { visualModes, type VisualModeId } from './visualModes'
@@ -6,6 +7,7 @@ import './styles.css'
 
 export default function App() {
   const state = visualStates[0]
+  const [experienceMode, setExperienceMode] = useState<ExperienceModeId>('novel')
   const [modeId, setModeId] = useState<VisualModeId>('place')
   const mode = visualModes.find((candidate) => candidate.id === modeId) ?? visualModes[0]
   const [modelStatus, setModelStatus] = useState<ModelLayerStatus>({ status: 'loading', active: false })
@@ -33,16 +35,53 @@ export default function App() {
   )
 
   return (
-    <main className="app" style={{ '--state-color': mode.color, '--state-accent': mode.accent } as React.CSSProperties}>
+    <main
+      className={`app experience-${experienceMode}`}
+      style={{ '--state-color': mode.color, '--state-accent': mode.accent } as React.CSSProperties}
+      data-experience-mode={experienceMode}
+    >
       <header className="header">
         <a className="wordmark" href="#stage" aria-label="버추어미 잠재공간 MVP">
           <span className="mark" aria-hidden="true"><i /><i /><i /></span>
           <span>VIRTUEME</span>
         </a>
-        <p>GENERATIVE LATENT STUDY <span>/</span> MVP 01</p>
-        <div className="live-status"><i /> PORTRAIT {portraitVisible ? 'ON' : 'OFF'}</div>
+        <nav className="experience-nav" aria-label="버추어미 경험 모드">
+          {experienceModes.map((candidate) => (
+            <button
+              type="button"
+              className={candidate.id === experienceMode ? 'active' : ''}
+              aria-current={candidate.id === experienceMode ? 'page' : undefined}
+              onClick={() => setExperienceMode(candidate.id)}
+              key={candidate.id}
+            >
+              <span>{candidate.index}</span>
+              <strong>{candidate.label}</strong>
+              <small>{candidate.koLabel}</small>
+            </button>
+          ))}
+        </nav>
+        <div className="live-status">
+          <i /> {experienceMode === 'visual' ? `PORTRAIT ${portraitVisible ? 'ON' : 'OFF'}` : `${experienceMode.toUpperCase()} MODE`}
+        </div>
       </header>
 
+      <section className="storyseed-panel" data-testid="novel-mode" hidden={experienceMode !== 'novel'}>
+        <iframe
+          src={`${import.meta.env.BASE_URL}storyseed-novel.html`}
+          title="Storyseed 노벨 모드"
+          sandbox="allow-scripts allow-same-origin allow-forms"
+        />
+      </section>
+
+      <section className="storyseed-panel" data-testid="talk-mode" hidden={experienceMode !== 'talk'}>
+        <iframe
+          src={`${import.meta.env.BASE_URL}storyseed-talk.html`}
+          title="Storyseed 채팅 모드"
+          sandbox="allow-scripts allow-same-origin allow-forms"
+        />
+      </section>
+
+      <section className="visual-panel" data-testid="visual-mode" hidden={experienceMode !== 'visual'}>
       <section className="workspace single-example" id="stage">
         <nav className="state-nav" aria-label="잠재 비주얼 모드">
           <div className="eyebrow">THREE LATENT MODES</div>
@@ -92,7 +131,7 @@ export default function App() {
             intensity={0.86}
             personalFeatures={null}
             mode={mode}
-            enabled
+            enabled={experienceMode === 'visual'}
             onStatus={handleModelStatus}
           />
           {portraitVisible && (
@@ -128,6 +167,7 @@ export default function App() {
         </div>
         <div className="clock">LOOP DURATION <strong>12 SEC</strong></div>
       </footer>
+      </section>
     </main>
   )
 }
