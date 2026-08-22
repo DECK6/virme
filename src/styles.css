@@ -93,6 +93,31 @@ button { cursor: pointer; }
   padding: 0 4px;
   transform: none;
 }
+.portrait-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 16px;
+  padding: 13px 4px;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  background: transparent;
+  color: rgba(255,255,255,.4);
+  font: 8px 'Space Mono', monospace;
+  letter-spacing: .12em;
+}
+.portrait-toggle::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border: 1px solid rgba(255,255,255,.32);
+  border-radius: 50%;
+}
+.portrait-toggle span { margin-right: auto; margin-left: 10px; }
+.portrait-toggle strong { color: rgba(255,255,255,.55); font-weight: 400; }
+.portrait-toggle.active::before { border-color: var(--state-color); background: var(--state-color); box-shadow: 0 0 10px var(--state-color); }
+.portrait-toggle.active strong { color: var(--state-color); }
 .single-example-meta {
   display: grid;
   grid-template-columns: 1fr auto;

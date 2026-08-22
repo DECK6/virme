@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { portraitAsset, visualStates } from '../src/visualStates'
 
 describe('generative portrait visual contract', () => {
-  it('keeps one portrait asset present in every visual state', () => {
+  it('keeps one optional portrait asset available in every visual state', () => {
     expect(portraitAsset).toBe('/assets/central-portrait.png')
     expect(visualStates.length).toBeGreaterThanOrEqual(5)
 

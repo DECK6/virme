@@ -1,6 +1,6 @@
 # Virtueme Generative Portrait MVP
 
-개인 데이터로 이동하는 StyleGAN 잠재공간과 중앙 초상을 결합한 Virtueme 생성 초상 연구입니다. 현재 공개 MVP는 하나의 잠재 장면을 12초 폐루프 영상으로 보여줍니다.
+개인 데이터로 이동하는 StyleGAN 잠재공간을 보여주는 Virtueme 생성 비주얼 연구입니다. 현재 공개 MVP는 하나의 잠재 장면을 12초 폐루프 영상으로 보여주며, 중앙 초상은 화면에서 선택적으로 켜고 끌 수 있습니다.
 
 공개 페이지: [dexa.art/virme](https://dexa.art/virme/)
 
@@ -26,14 +26,14 @@ bun run build:public
 
 ## Scope
 
-- 중앙에 유지되는 투명 배경 합성 초상 1개
+- 기본값 `OFF`인 선택형 중앙 초상 1개
 - 단일 `STABILITY` 예시와 하나의 잠재 풍경
 - [Lucid Sonic Dreams](https://github.com/mikael-alafriz-deel/lucid-sonic-dreams)의 누적 latent controller 구조를 개인 데이터용으로 TypeScript 포팅
 - [Raspberry - Saje 레퍼런스 영상](https://www.youtube.com/watch?v=iEFqcMrszH0)의 고밀도 GAN 질감·프레임 용융감을 시각 기준으로 사용
 - 개인 데이터, 실제 StyleGAN2 생성 프레임, 사전 렌더 잠재 루프의 시각적 라우팅 MVP
 - Apple Silicon의 PyTorch MPS에서 로컬 추론하고 StyleGAN 모드에서는 생성 프레임 자체를 주 화면으로 표시
 
-중앙 초상은 공개 장면의 독립된 기준 레이어로 유지됩니다.
+중앙 초상은 잠재 영상과 분리된 선택 레이어이며, 사용자가 `PORTRAIT` 토글로 표시 여부를 정합니다.
 
 ## Lucid Sonic Dreams mapping
 
@@ -46,7 +46,7 @@ bun run build:public
 - 개인 데이터의 다섯 신호로 여러 StyleGAN `W` latent를 혼합하고 activity·change·confidence로 truncation과 변이 seed를 제어
 - StyleGAN 모드에서는 완성 RGB 초상을 출력하지 않는다. 여섯 `W` latent를 서로 다른 공간 영역에 배치하고 32×32 중간 feature의 가중 분산, 즉 latent 영역 사이의 구조를 RGB로 투영한다.
 - latent curl flow field는 명시적으로 procedural fallback을 선택했을 때만 렌더링
-- 중앙 초상은 모델 및 절차적 생성장 위의 독립 레이어로 항상 유지
+- 중앙 초상은 모델 영상 위의 독립 레이어로 유지되며 기본값은 숨김
 
 ## Mac model runtime
 

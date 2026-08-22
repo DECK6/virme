@@ -1,17 +1,20 @@
 import { expect, test } from '@playwright/test'
 
-test('keeps the central portrait visible in the single latent example', async ({ page }) => {
+test('offers an off-by-default portrait toggle', async ({ page }) => {
   await page.goto('/')
-  const portrait = page.getByTestId('central-portrait')
+  const toggle = page.getByTestId('portrait-toggle')
 
-  await expect(portrait).toBeVisible()
-  await expect(portrait).toHaveAttribute('src', '/assets/central-portrait.png')
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+  await expect(page.getByTestId('central-portrait')).toHaveCount(0)
+  await expect(page.getByTestId('portrait-anchor')).toHaveCount(0)
   await expect(page.getByTestId('portrait-stage')).toHaveAttribute('data-example-count', '1')
   await expect(page.locator('.state-button')).toHaveCount(1)
-  await expect(page.locator('.state-nav h1')).toContainText('하나의 얼굴,')
   await expect(page.locator('.state-nav h1')).toContainText('하나의 잠재 장면')
-  const opacity = await portrait.evaluate((element) => Number.parseFloat(getComputedStyle(element.closest('figure')!).opacity))
-  expect(opacity).toBeGreaterThanOrEqual(0.72)
+
+  await toggle.click()
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByTestId('central-portrait')).toBeVisible()
+  await expect(page.getByTestId('central-portrait')).toHaveAttribute('src', '/assets/central-portrait.png')
 })
 
 test('shows one expanded latent-loop example without a control sidebar', async ({ page }) => {
@@ -43,12 +46,12 @@ test('keeps the single showcase stable when personal data events arrive', async 
   await expect(page.locator('.state-button')).toContainText('STABILITY')
 })
 
-test('uses a continuous personal-data flow without waveform, orbit, or voxel graphics', async ({ page }) => {
+test('uses a continuous latent flow without waveform, orbit, or voxel graphics', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('.orbit')).toHaveCount(0)
   await expect(page.locator('.stage-grid')).toHaveCount(0)
   await expect(page.locator('.portrait-ghost')).toHaveCount(0)
   await expect(page.locator('.model-frame-field')).toHaveCount(0)
   await expect(page.getByTestId('stylegan-layer')).toHaveAttribute('data-renderer', 'stylegan2-ada')
-  await expect(page.getByTestId('central-portrait')).toBeVisible()
+  await expect(page.getByTestId('central-portrait')).toHaveCount(0)
 })
