@@ -11,6 +11,8 @@ const stateIndex: Record<VisualStateId, number> = {
   'possible-self': 4,
 }
 
+const isStaticPublicBuild = import.meta.env.BASE_URL !== '/'
+
 export type ModelLayerStatus = StyleGanHealth & { active: boolean }
 
 export function StyleGanLayer({
@@ -36,8 +38,8 @@ export function StyleGanLayer({
   )
 
   useEffect(() => {
-    if (!enabled) {
-      onStatus({ status: 'ready', backend: 'procedural-fallback', active: false })
+    if (!enabled || isStaticPublicBuild) {
+      onStatus({ status: 'ready', backend: isStaticPublicBuild ? 'pre-rendered-video' : 'procedural-fallback', active: false })
       return
     }
     let cancelled = false
