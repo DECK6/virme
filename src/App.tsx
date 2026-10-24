@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { captureStage, downloadPng } from './captureStage'
 import { experienceModes, type ExperienceModeId } from './experienceModes'
+import { InsightPanel } from './InsightPanel'
+import { WebzinePanel } from './WebzinePanel'
+import { MusicPanel, type AudioDrive } from './MusicPanel'
+import { isNarrativeMessage, narrativeLabel, signalsToFeatures, type NarrativeObject } from './narrative'
+import { normalizePersonalData, type NormalizedPersonalData, type PersonalFeatures } from './personalData'
 import { StyleGanLayer, type ModelLayerStatus } from './StyleGanLayer'
 import { portraitAsset, visualStates } from './visualStates'
 import { visualModes, type VisualModeId } from './visualModes'
@@ -10,7 +15,7 @@ const PORTRAIT_STORAGE_KEY = 'virtueme:portrait-visible'
 
 export default function App() {
   const state = visualStates[0]
-  const [experienceMode, setExperienceMode] = useState<ExperienceModeId>('novel')
+  const [experienceMode, setExperienceMode] = useState<ExperienceModeId>('webzine')
   const [modeId, setModeId] = useState<VisualModeId>('place')
   const mode = visualModes.find((candidate) => candidate.id === modeId) ?? visualModes[0]
   const [modelStatus, setModelStatus] = useState<ModelLayerStatus>({ status: 'loading', active: false })
@@ -44,6 +49,23 @@ export default function App() {
       setSaving(false)
     }
   }
+  // 노벨 모드(iframe)가 core 서버에서 받은 서사 오브젝트. 시각화·비주얼 모드가 같은 값을 쓴다
+  const [narrative, setNarrative] = useState<NarrativeObject | null>(null)
+  const [features, setFeatures] = useState<PersonalFeatures | null>(null)
+  const previousSignals = useRef<NormalizedPersonalData | undefined>(undefined)
+  const [audioDrive, setAudioDrive] = useState<AudioDrive | null>(null)
+  const [musicVideo, setMusicVideo] = useState<string | null>(null)
+  useEffect(() => {
+    const onMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin || !isNarrativeMessage(event.data)) return
+      const next = event.data.narrative
+      setNarrative(next)
+      setFeatures(signalsToFeatures(next.signals, previousSignals.current))
+      previousSignals.current = normalizePersonalData(next.signals)
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [])
   const handleModelStatus = useCallback((status: ModelLayerStatus) => setModelStatus(status), [])
   const backendLabel = mode.id === 'place' && modelStatus.active
     ? `${modelStatus.model ?? 'STYLEGAN2'} LATENT STRUCTURE · ${(modelStatus.device ?? 'MAC').toUpperCase()}`
@@ -94,9 +116,13 @@ export default function App() {
           ))}
         </nav>
         <div className="live-status">
-          <i /> {experienceMode === 'visual' ? `PORTRAIT ${portraitVisible ? 'ON' : 'OFF'}` : `${experienceMode.toUpperCase()} MODE`}
+          <i /> {narrative ? narrativeLabel(narrative) : experienceMode === 'visual' ? `PORTRAIT ${portraitVisible ? 'ON' : 'OFF'}` : `${experienceMode.toUpperCase()} MODE`}
         </div>
       </header>
+
+      <section className="webzine-panel" data-testid="webzine-mode" hidden={experienceMode !== 'webzine'}>
+        <WebzinePanel active={experienceMode === 'webzine'} />
+      </section>
 
       <section className="storyseed-panel" data-testid="novel-mode" hidden={experienceMode !== 'novel'}>
         <iframe
@@ -106,12 +132,9 @@ export default function App() {
         />
       </section>
 
-      <section className="storyseed-panel" data-testid="talk-mode" hidden={experienceMode !== 'talk'}>
-        <iframe
-          src={`${import.meta.env.BASE_URL}storyseed-talk.html`}
-          title="Storyseed 채팅 모드"
-          sandbox="allow-scripts allow-same-origin allow-forms"
-        />
+
+      <section className="insight-panel" data-testid="insight-mode" hidden={experienceMode !== 'insight'}>
+        <InsightPanel narrative={narrative} active={experienceMode === 'insight'} />
       </section>
 
       <section className="visual-panel" data-testid="visual-mode" hidden={experienceMode !== 'visual'}>
@@ -159,6 +182,7 @@ export default function App() {
             {saving ? '저장 중…' : '화면 PNG 저장'}
           </button>
           <p className="capture-message" role="status">{captureMessage || '현재 비주얼과 초상 설정을 함께 저장합니다.'}</p>
+          <MusicPanel narrative={narrative} onDrive={setAudioDrive} onVideo={setMusicVideo} />
           <div className="single-example-meta">
             <span>LOOP</span><strong>12 SEC</strong>
             <span>MODEL</span><strong>{mode.model}</strong>
@@ -176,11 +200,18 @@ export default function App() {
           <StyleGanLayer
             state={state.id}
             intensity={0.86}
-            personalFeatures={null}
+            personalFeatures={features}
             mode={mode}
             enabled={experienceMode === 'visual'}
             onStatus={handleModelStatus}
+            audioDrive={audioDrive}
           />
+          {musicVideo && experienceMode === 'visual' && (
+            <div className="music-video-layer">
+              <video src={musicVideo} controls autoPlay playsInline data-testid="music-video" />
+              <button type="button" onClick={() => setMusicVideo(null)}>영상 닫기</button>
+            </div>
+          )}
           {portraitVisible && (
             <figure className="portrait-anchor" data-testid="portrait-anchor">
               <div className="portrait-aura" aria-hidden="true" />
@@ -204,6 +235,11 @@ export default function App() {
           </div>
           <p className="state-description">{mode.description} 초상은 선택적으로 겹쳐 볼 수 있습니다.</p>
           <div className="model-chip">{backendLabel}</div>
+          {narrative && (
+            <div className="narrative-chip" data-testid="narrative-chip">
+              <span>DATA</span> {narrativeLabel(narrative)}
+            </div>
+          )}
         </div>
       </section>
 

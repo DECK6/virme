@@ -1,0 +1,1072 @@
+{
+ "schema": "virtueme.book_grammar/1",
+ "n": 206,
+ "n_labeled": 206,
+ "n_checked": 30,
+ "overall": {
+  "archetype": {
+   "full_bleed": 0.564,
+   "split": 0.174,
+   "centered_motif": 0.123,
+   "framed": 0.106,
+   "pattern": 0.025,
+   "typographic": 0.008
+  },
+  "title_position": {
+   "top": 0.496,
+   "middle": 0.39,
+   "bottom": 0.114
+  },
+  "title_scale": {
+   "medium": 0.487,
+   "large": 0.369,
+   "dominant": 0.081,
+   "small": 0.064
+  },
+  "typeface": {
+   "sans": 0.331,
+   "serif": 0.229,
+   "handwritten": 0.22,
+   "display": 0.22
+  },
+  "art_style": {
+   "photo": 0.314,
+   "line": 0.212,
+   "painterly": 0.208,
+   "flat_vector": 0.119,
+   "collage": 0.059,
+   "abstract": 0.059,
+   "none": 0.03
+  },
+  "moods": {
+   "mysterious": 0.183,
+   "dark": 0.131,
+   "whimsical": 0.106,
+   "tense": 0.101,
+   "playful": 0.093,
+   "hopeful": 0.067,
+   "energetic": 0.064,
+   "serene": 0.062,
+   "melancholic": 0.052,
+   "romantic": 0.039,
+   "nostalgic": 0.036,
+   "dreamy": 0.029,
+   "eerie": 0.025,
+   "warm": 0.011
+  }
+ },
+ "genres": {
+  "mystery": {
+   "name": "미스터리",
+   "n": 30,
+   "n_labeled": 30,
+   "n_korean": 15,
+   "n_checked": 5,
+   "genre_agreement": 0.6,
+   "dist": {
+    "archetype": {
+     "full_bleed": 0.6,
+     "split": 0.257,
+     "centered_motif": 0.143
+    },
+    "title_position": {
+     "top": 0.4,
+     "middle": 0.371,
+     "bottom": 0.229
+    },
+    "title_scale": {
+     "medium": 0.371,
+     "large": 0.343,
+     "dominant": 0.171,
+     "small": 0.114
+    },
+    "typeface": {
+     "sans": 0.543,
+     "serif": 0.171,
+     "display": 0.171,
+     "handwritten": 0.114
+    },
+    "art_style": {
+     "photo": 0.457,
+     "collage": 0.143,
+     "painterly": 0.114,
+     "line": 0.114,
+     "abstract": 0.114,
+     "flat_vector": 0.057
+    },
+    "moods": {
+     "mysterious": 0.292,
+     "dark": 0.208,
+     "tense": 0.188,
+     "eerie": 0.083,
+     "whimsical": 0.062,
+     "melancholic": 0.062,
+     "nostalgic": 0.031,
+     "serene": 0.021,
+     "playful": 0.021,
+     "energetic": 0.01,
+     "hopeful": 0.01,
+     "dreamy": 0.01
+    }
+   },
+   "lift": {
+    "archetype": {
+     "full_bleed": 1.06,
+     "split": 1.48,
+     "centered_motif": 1.16
+    },
+    "title_position": {
+     "top": 0.81,
+     "middle": 0.95,
+     "bottom": 2.01
+    },
+    "title_scale": {
+     "medium": 0.76,
+     "large": 0.93,
+     "dominant": 2.11,
+     "small": 1.78
+    },
+    "typeface": {
+     "sans": 1.64,
+     "serif": 0.75,
+     "display": 0.78,
+     "handwritten": 0.52
+    },
+    "art_style": {
+     "photo": 1.46,
+     "collage": 2.42,
+     "painterly": 0.55,
+     "line": 0.54,
+     "abstract": 1.93,
+     "flat_vector": 0.48
+    },
+    "moods": {
+     "mysterious": 1.6,
+     "dark": 1.59,
+     "tense": 1.86,
+     "eerie": 3.32,
+     "whimsical": 0.58,
+     "melancholic": 1.19,
+     "nostalgic": 0.86,
+     "serene": 0.34,
+     "playful": 0.23,
+     "energetic": 0.16,
+     "hopeful": 0.15,
+     "dreamy": 0.34
+    }
+   },
+   "tone": {
+    "dark": 0.567,
+    "mid": 0.167,
+    "light": 0.267,
+    "lightness": 47.987,
+    "contrast": 0.446,
+    "colorfulness": 0.557,
+    "edge_density": 0.376,
+    "negative_space": 0.326
+   },
+   "palette": [
+    {
+     "hex": "#221d22",
+     "share": 0.321,
+     "L": 11.5
+    },
+    {
+     "hex": "#e4dbcd",
+     "share": 0.243,
+     "L": 87.7
+    },
+    {
+     "hex": "#705f4a",
+     "share": 0.15,
+     "L": 41.4
+    },
+    {
+     "hex": "#808a9d",
+     "share": 0.103,
+     "L": 57.2
+    },
+    {
+     "hex": "#b74027",
+     "share": 0.093,
+     "L": 44.1
+    },
+    {
+     "hex": "#e2b43b",
+     "share": 0.09,
+     "L": 75.5
+    }
+   ]
+  },
+  "romance": {
+   "name": "로맨스",
+   "n": 30,
+   "n_labeled": 30,
+   "n_korean": 15,
+   "n_checked": 5,
+   "genre_agreement": 0.6,
+   "dist": {
+    "archetype": {
+     "full_bleed": 0.629,
+     "split": 0.171,
+     "centered_motif": 0.143,
+     "framed": 0.057
+    },
+    "title_position": {
+     "middle": 0.514,
+     "top": 0.343,
+     "bottom": 0.143
+    },
+    "title_scale": {
+     "medium": 0.486,
+     "large": 0.314,
+     "dominant": 0.114,
+     "small": 0.086
+    },
+    "typeface": {
+     "serif": 0.371,
+     "sans": 0.257,
+     "handwritten": 0.2,
+     "display": 0.171
+    },
+    "art_style": {
+     "photo": 0.486,
+     "painterly": 0.286,
+     "flat_vector": 0.114,
+     "line": 0.057,
+     "none": 0.029,
+     "collage": 0.029
+    },
+    "moods": {
+     "romantic": 0.18,
+     "hopeful": 0.13,
+     "serene": 0.13,
+     "nostalgic": 0.09,
+     "mysterious": 0.09,
+     "dreamy": 0.08,
+     "dark": 0.07,
+     "melancholic": 0.06,
+     "whimsical": 0.05,
+     "playful": 0.05,
+     "tense": 0.04,
+     "energetic": 0.02,
+     "warm": 0.01
+    }
+   },
+   "lift": {
+    "archetype": {
+     "full_bleed": 1.12,
+     "split": 0.98,
+     "centered_motif": 1.16,
+     "framed": 0.54
+    },
+    "title_position": {
+     "middle": 1.32,
+     "top": 0.69,
+     "bottom": 1.25
+    },
+    "title_scale": {
+     "medium": 1.0,
+     "large": 0.85,
+     "dominant": 1.41,
+     "small": 1.34
+    },
+    "typeface": {
+     "serif": 1.62,
+     "sans": 0.78,
+     "handwritten": 0.91,
+     "display": 0.78
+    },
+    "art_style": {
+     "photo": 1.55,
+     "painterly": 1.38,
+     "flat_vector": 0.96,
+     "line": 0.27,
+     "none": 0.97,
+     "collage": 0.49
+    },
+    "moods": {
+     "romantic": 4.62,
+     "hopeful": 1.94,
+     "serene": 2.1,
+     "nostalgic": 2.5,
+     "mysterious": 0.49,
+     "dreamy": 2.76,
+     "dark": 0.53,
+     "melancholic": 1.15,
+     "whimsical": 0.47,
+     "playful": 0.54,
+     "tense": 0.4,
+     "energetic": 0.31,
+     "warm": 0.91
+    }
+   },
+   "tone": {
+    "dark": 0.267,
+    "mid": 0.3,
+    "light": 0.433,
+    "lightness": 56.217,
+    "contrast": 0.371,
+    "colorfulness": 0.55,
+    "edge_density": 0.306,
+    "negative_space": 0.394
+   },
+   "palette": [
+    {
+     "hex": "#e2e1e1",
+     "share": 0.251,
+     "L": 89.5
+    },
+    {
+     "hex": "#2c2628",
+     "share": 0.25,
+     "L": 16.0
+    },
+    {
+     "hex": "#999389",
+     "share": 0.164,
+     "L": 61.1
+    },
+    {
+     "hex": "#5185a0",
+     "share": 0.137,
+     "L": 53.0
+    },
+    {
+     "hex": "#b4b05f",
+     "share": 0.099,
+     "L": 70.6
+    },
+    {
+     "hex": "#cd684b",
+     "share": 0.098,
+     "L": 55.4
+    }
+   ]
+  },
+  "sf": {
+   "name": "SF",
+   "n": 30,
+   "n_labeled": 30,
+   "n_korean": 15,
+   "n_checked": 4,
+   "genre_agreement": 0.4,
+   "dist": {
+    "archetype": {
+     "full_bleed": 0.647,
+     "centered_motif": 0.147,
+     "split": 0.118,
+     "framed": 0.059,
+     "pattern": 0.029
+    },
+    "title_position": {
+     "top": 0.5,
+     "middle": 0.382,
+     "bottom": 0.118
+    },
+    "title_scale": {
+     "medium": 0.529,
+     "large": 0.382,
+     "small": 0.059,
+     "dominant": 0.029
+    },
+    "typeface": {
+     "sans": 0.353,
+     "display": 0.324,
+     "serif": 0.235,
+     "handwritten": 0.088
+    },
+    "art_style": {
+     "painterly": 0.412,
+     "flat_vector": 0.235,
+     "abstract": 0.118,
+     "photo": 0.088,
+     "line": 0.088,
+     "collage": 0.059
+    },
+    "moods": {
+     "mysterious": 0.223,
+     "dark": 0.117,
+     "whimsical": 0.117,
+     "tense": 0.117,
+     "energetic": 0.106,
+     "hopeful": 0.106,
+     "playful": 0.074,
+     "dreamy": 0.043,
+     "melancholic": 0.032,
+     "nostalgic": 0.032,
+     "serene": 0.021,
+     "romantic": 0.011
+    }
+   },
+   "lift": {
+    "archetype": {
+     "full_bleed": 1.15,
+     "centered_motif": 1.2,
+     "split": 0.68,
+     "framed": 0.56,
+     "pattern": 1.16
+    },
+    "title_position": {
+     "top": 1.01,
+     "middle": 0.98,
+     "bottom": 1.04
+    },
+    "title_scale": {
+     "medium": 1.09,
+     "large": 1.04,
+     "small": 0.92,
+     "dominant": 0.36
+    },
+    "typeface": {
+     "sans": 1.07,
+     "display": 1.47,
+     "serif": 1.03,
+     "handwritten": 0.4
+    },
+    "art_style": {
+     "painterly": 1.98,
+     "flat_vector": 1.97,
+     "abstract": 2.0,
+     "photo": 0.28,
+     "line": 0.42,
+     "collage": 1.0
+    },
+    "moods": {
+     "mysterious": 1.22,
+     "dark": 0.89,
+     "whimsical": 1.1,
+     "tense": 1.16,
+     "energetic": 1.66,
+     "hopeful": 1.58,
+     "playful": 0.8,
+     "dreamy": 1.48,
+     "melancholic": 0.62,
+     "nostalgic": 0.89,
+     "serene": 0.34,
+     "romantic": 0.28
+    }
+   },
+   "tone": {
+    "dark": 0.567,
+    "mid": 0.3,
+    "light": 0.133,
+    "lightness": 40.813,
+    "contrast": 0.348,
+    "colorfulness": 0.503,
+    "edge_density": 0.335,
+    "negative_space": 0.335
+   },
+   "palette": [
+    {
+     "hex": "#1b171a",
+     "share": 0.29,
+     "L": 8.2
+    },
+    {
+     "hex": "#534f52",
+     "share": 0.206,
+     "L": 34.1
+    },
+    {
+     "hex": "#b49b71",
+     "share": 0.196,
+     "L": 65.2
+    },
+    {
+     "hex": "#bebcb5",
+     "share": 0.164,
+     "L": 76.2
+    },
+    {
+     "hex": "#c54e33",
+     "share": 0.109,
+     "L": 48.9
+    },
+    {
+     "hex": "#45266f",
+     "share": 0.035,
+     "L": 22.9
+    }
+   ]
+  },
+  "fantasy": {
+   "name": "판타지",
+   "n": 30,
+   "n_labeled": 30,
+   "n_korean": 15,
+   "n_checked": 4,
+   "genre_agreement": 0.767,
+   "dist": {
+    "archetype": {
+     "full_bleed": 0.559,
+     "split": 0.176,
+     "centered_motif": 0.147,
+     "framed": 0.118
+    },
+    "title_position": {
+     "top": 0.529,
+     "middle": 0.412,
+     "bottom": 0.059
+    },
+    "title_scale": {
+     "large": 0.5,
+     "medium": 0.441,
+     "small": 0.059
+    },
+    "typeface": {
+     "display": 0.294,
+     "serif": 0.294,
+     "handwritten": 0.235,
+     "sans": 0.176
+    },
+    "art_style": {
+     "line": 0.353,
+     "painterly": 0.353,
+     "photo": 0.176,
+     "flat_vector": 0.059,
+     "abstract": 0.029,
+     "collage": 0.029
+    },
+    "moods": {
+     "mysterious": 0.181,
+     "dark": 0.138,
+     "whimsical": 0.128,
+     "tense": 0.106,
+     "energetic": 0.106,
+     "hopeful": 0.085,
+     "playful": 0.074,
+     "serene": 0.064,
+     "melancholic": 0.032,
+     "dreamy": 0.021,
+     "warm": 0.021,
+     "eerie": 0.021,
+     "nostalgic": 0.011,
+     "romantic": 0.011
+    }
+   },
+   "lift": {
+    "archetype": {
+     "full_bleed": 0.99,
+     "split": 1.01,
+     "centered_motif": 1.2,
+     "framed": 1.11
+    },
+    "title_position": {
+     "top": 1.07,
+     "middle": 1.06,
+     "bottom": 0.52
+    },
+    "title_scale": {
+     "large": 1.36,
+     "medium": 0.91,
+     "small": 0.92
+    },
+    "typeface": {
+     "display": 1.34,
+     "serif": 1.28,
+     "handwritten": 1.07,
+     "sans": 0.53
+    },
+    "art_style": {
+     "line": 1.67,
+     "painterly": 1.7,
+     "photo": 0.56,
+     "flat_vector": 0.5,
+     "abstract": 0.49,
+     "collage": 0.49
+    },
+    "moods": {
+     "mysterious": 0.99,
+     "dark": 1.05,
+     "whimsical": 1.21,
+     "tense": 1.05,
+     "energetic": 1.66,
+     "hopeful": 1.27,
+     "playful": 0.8,
+     "serene": 1.03,
+     "melancholic": 0.62,
+     "dreamy": 0.72,
+     "warm": 1.91,
+     "eerie": 0.84,
+     "nostalgic": 0.31,
+     "romantic": 0.28
+    }
+   },
+   "tone": {
+    "dark": 0.367,
+    "mid": 0.333,
+    "light": 0.3,
+    "lightness": 51.553,
+    "contrast": 0.36,
+    "colorfulness": 0.585,
+    "edge_density": 0.368,
+    "negative_space": 0.275
+   },
+   "palette": [
+    {
+     "hex": "#26262b",
+     "share": 0.243,
+     "L": 15.3
+    },
+    {
+     "hex": "#dbd5c6",
+     "share": 0.242,
+     "L": 85.3
+    },
+    {
+     "hex": "#715c50",
+     "share": 0.184,
+     "L": 40.7
+    },
+    {
+     "hex": "#cba144",
+     "share": 0.124,
+     "L": 68.4
+    },
+    {
+     "hex": "#8297b9",
+     "share": 0.119,
+     "L": 62.1
+    },
+    {
+     "hex": "#b1412b",
+     "share": 0.088,
+     "L": 43.3
+    }
+   ]
+  },
+  "thriller": {
+   "name": "스릴러",
+   "n": 28,
+   "n_labeled": 28,
+   "n_korean": 13,
+   "n_checked": 4,
+   "genre_agreement": 0.464,
+   "dist": {
+    "archetype": {
+     "full_bleed": 0.719,
+     "split": 0.156,
+     "framed": 0.094,
+     "centered_motif": 0.031
+    },
+    "title_position": {
+     "top": 0.438,
+     "middle": 0.438,
+     "bottom": 0.125
+    },
+    "title_scale": {
+     "medium": 0.406,
+     "large": 0.375,
+     "dominant": 0.219
+    },
+    "typeface": {
+     "sans": 0.438,
+     "serif": 0.25,
+     "display": 0.25,
+     "handwritten": 0.062
+    },
+    "art_style": {
+     "photo": 0.5,
+     "line": 0.125,
+     "abstract": 0.125,
+     "none": 0.094,
+     "flat_vector": 0.062,
+     "painterly": 0.062,
+     "collage": 0.031
+    },
+    "moods": {
+     "mysterious": 0.259,
+     "dark": 0.235,
+     "tense": 0.198,
+     "eerie": 0.062,
+     "energetic": 0.049,
+     "whimsical": 0.049,
+     "playful": 0.049,
+     "serene": 0.037,
+     "melancholic": 0.025,
+     "romantic": 0.025,
+     "dreamy": 0.012
+    }
+   },
+   "lift": {
+    "archetype": {
+     "full_bleed": 1.27,
+     "split": 0.9,
+     "framed": 0.89,
+     "centered_motif": 0.25
+    },
+    "title_position": {
+     "top": 0.88,
+     "middle": 1.12,
+     "bottom": 1.1
+    },
+    "title_scale": {
+     "medium": 0.83,
+     "large": 1.02,
+     "dominant": 2.7
+    },
+    "typeface": {
+     "sans": 1.32,
+     "serif": 1.09,
+     "display": 1.14,
+     "handwritten": 0.28
+    },
+    "art_style": {
+     "photo": 1.59,
+     "line": 0.59,
+     "abstract": 2.12,
+     "none": 3.13,
+     "flat_vector": 0.52,
+     "painterly": 0.3,
+     "collage": 0.53
+    },
+    "moods": {
+     "mysterious": 1.42,
+     "dark": 1.79,
+     "tense": 1.96,
+     "eerie": 2.48,
+     "energetic": 0.77,
+     "whimsical": 0.46,
+     "playful": 0.53,
+     "serene": 0.6,
+     "melancholic": 0.48,
+     "romantic": 0.64,
+     "dreamy": 0.41
+    }
+   },
+   "tone": {
+    "dark": 0.679,
+    "mid": 0.071,
+    "light": 0.25,
+    "lightness": 47.068,
+    "contrast": 0.414,
+    "colorfulness": 0.576,
+    "edge_density": 0.367,
+    "negative_space": 0.328
+   },
+   "palette": [
+    {
+     "hex": "#e7e7d8",
+     "share": 0.261,
+     "L": 91.4
+    },
+    {
+     "hex": "#1b1717",
+     "share": 0.241,
+     "L": 8.2
+    },
+    {
+     "hex": "#4f4c4b",
+     "share": 0.157,
+     "L": 32.5
+    },
+    {
+     "hex": "#959284",
+     "share": 0.151,
+     "L": 60.4
+    },
+    {
+     "hex": "#ad3128",
+     "share": 0.125,
+     "L": 39.9
+    },
+    {
+     "hex": "#2d4293",
+     "share": 0.064,
+     "L": 30.8
+    }
+   ]
+  },
+  "comedy": {
+   "name": "코미디",
+   "n": 30,
+   "n_labeled": 30,
+   "n_korean": 15,
+   "n_checked": 4,
+   "genre_agreement": 0.467,
+   "dist": {
+    "archetype": {
+     "framed": 0.353,
+     "full_bleed": 0.294,
+     "split": 0.147,
+     "pattern": 0.118,
+     "centered_motif": 0.088
+    },
+    "title_position": {
+     "top": 0.706,
+     "middle": 0.176,
+     "bottom": 0.118
+    },
+    "title_scale": {
+     "medium": 0.676,
+     "large": 0.294,
+     "small": 0.029
+    },
+    "typeface": {
+     "handwritten": 0.529,
+     "display": 0.176,
+     "sans": 0.147,
+     "serif": 0.147
+    },
+    "art_style": {
+     "line": 0.618,
+     "photo": 0.147,
+     "flat_vector": 0.118,
+     "painterly": 0.059,
+     "abstract": 0.029,
+     "none": 0.029
+    },
+    "moods": {
+     "playful": 0.356,
+     "whimsical": 0.288,
+     "energetic": 0.082,
+     "dark": 0.055,
+     "mysterious": 0.055,
+     "serene": 0.041,
+     "melancholic": 0.027,
+     "nostalgic": 0.027,
+     "warm": 0.027,
+     "hopeful": 0.027,
+     "romantic": 0.014
+    }
+   },
+   "lift": {
+    "archetype": {
+     "framed": 3.33,
+     "full_bleed": 0.52,
+     "split": 0.84,
+     "pattern": 4.72,
+     "centered_motif": 0.72
+    },
+    "title_position": {
+     "top": 1.42,
+     "middle": 0.45,
+     "bottom": 1.04
+    },
+    "title_scale": {
+     "medium": 1.39,
+     "large": 0.8,
+     "small": 0.45
+    },
+    "typeface": {
+     "handwritten": 2.4,
+     "display": 0.8,
+     "sans": 0.44,
+     "serif": 0.64
+    },
+    "art_style": {
+     "line": 2.92,
+     "photo": 0.47,
+     "flat_vector": 0.99,
+     "painterly": 0.28,
+     "abstract": 0.49,
+     "none": 0.97
+    },
+    "moods": {
+     "playful": 3.83,
+     "whimsical": 2.72,
+     "energetic": 1.28,
+     "dark": 0.42,
+     "mysterious": 0.3,
+     "serene": 0.66,
+     "melancholic": 0.52,
+     "nostalgic": 0.75,
+     "warm": 2.45,
+     "hopeful": 0.4,
+     "romantic": 0.36
+    }
+   },
+   "tone": {
+    "dark": 0.2,
+    "mid": 0.467,
+    "light": 0.333,
+    "lightness": 58.18,
+    "contrast": 0.411,
+    "colorfulness": 0.71,
+    "edge_density": 0.379,
+    "negative_space": 0.314
+   },
+   "palette": [
+    {
+     "hex": "#d0c8bc",
+     "share": 0.427,
+     "L": 81.1
+    },
+    {
+     "hex": "#b43a1d",
+     "share": 0.181,
+     "L": 42.6
+    },
+    {
+     "hex": "#38312d",
+     "share": 0.16,
+     "L": 21.0
+    },
+    {
+     "hex": "#604e6f",
+     "share": 0.11,
+     "L": 36.1
+    },
+    {
+     "hex": "#bab430",
+     "share": 0.074,
+     "L": 71.9
+    },
+    {
+     "hex": "#87a6cb",
+     "share": 0.048,
+     "L": 67.0
+    }
+   ]
+  },
+  "literary": {
+   "name": "문학·에세이",
+   "n": 28,
+   "n_labeled": 28,
+   "n_korean": 13,
+   "n_checked": 4,
+   "genre_agreement": 0.964,
+   "dist": {
+    "archetype": {
+     "full_bleed": 0.5,
+     "split": 0.188,
+     "centered_motif": 0.156,
+     "framed": 0.062,
+     "typographic": 0.062,
+     "pattern": 0.031
+    },
+    "title_position": {
+     "top": 0.562,
+     "middle": 0.438
+    },
+    "title_scale": {
+     "medium": 0.5,
+     "large": 0.375,
+     "small": 0.094,
+     "dominant": 0.031
+    },
+    "typeface": {
+     "sans": 0.406,
+     "handwritten": 0.312,
+     "display": 0.156,
+     "serif": 0.125
+    },
+    "art_style": {
+     "photo": 0.344,
+     "flat_vector": 0.188,
+     "painterly": 0.156,
+     "line": 0.125,
+     "collage": 0.125,
+     "none": 0.062
+    },
+    "moods": {
+     "mysterious": 0.162,
+     "melancholic": 0.135,
+     "serene": 0.122,
+     "hopeful": 0.095,
+     "energetic": 0.081,
+     "whimsical": 0.081,
+     "playful": 0.081,
+     "dark": 0.081,
+     "nostalgic": 0.054,
+     "tense": 0.041,
+     "dreamy": 0.027,
+     "warm": 0.027,
+     "romantic": 0.014
+    }
+   },
+   "lift": {
+    "archetype": {
+     "full_bleed": 0.89,
+     "split": 1.08,
+     "centered_motif": 1.27,
+     "framed": 0.58,
+     "typographic": 7.75,
+     "pattern": 1.24
+    },
+    "title_position": {
+     "top": 1.13,
+     "middle": 1.12
+    },
+    "title_scale": {
+     "medium": 1.03,
+     "large": 1.02,
+     "small": 1.47,
+     "dominant": 0.38
+    },
+    "typeface": {
+     "sans": 1.23,
+     "handwritten": 1.42,
+     "display": 0.71,
+     "serif": 0.55
+    },
+    "art_style": {
+     "photo": 1.1,
+     "flat_vector": 1.58,
+     "painterly": 0.75,
+     "line": 0.59,
+     "collage": 2.12,
+     "none": 2.07
+    },
+    "moods": {
+     "mysterious": 0.89,
+     "melancholic": 2.6,
+     "serene": 1.97,
+     "hopeful": 1.42,
+     "energetic": 1.27,
+     "whimsical": 0.76,
+     "playful": 0.87,
+     "dark": 0.62,
+     "nostalgic": 1.5,
+     "tense": 0.41,
+     "dreamy": 0.93,
+     "warm": 2.45,
+     "romantic": 0.36
+    }
+   },
+   "tone": {
+    "dark": 0.321,
+    "mid": 0.393,
+    "light": 0.286,
+    "lightness": 55.829,
+    "contrast": 0.345,
+    "colorfulness": 0.464,
+    "edge_density": 0.263,
+    "negative_space": 0.483
+   },
+   "palette": [
+    {
+     "hex": "#dcdcd3",
+     "share": 0.305,
+     "L": 87.7
+    },
+    {
+     "hex": "#8c867a",
+     "share": 0.281,
+     "L": 56.1
+    },
+    {
+     "hex": "#28292a",
+     "share": 0.233,
+     "L": 16.5
+    },
+    {
+     "hex": "#b52530",
+     "share": 0.085,
+     "L": 40.2
+    },
+    {
+     "hex": "#a87336",
+     "share": 0.055,
+     "L": 52.7
+    },
+    {
+     "hex": "#cac63d",
+     "share": 0.04,
+     "L": 78.0
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Virtueme 내 기록 넣기</title>
+<style>
+  :root { color-scheme: dark; --bg:#0e0f16; --card:#15161d; --line:rgba(255,255,255,.09); --ink:#fff; --sub:#c3c2b7; --mut:#898781; --acc:#3987e5; --warn:#e8a37f; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.7 -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', system-ui, sans-serif; }
+  main { max-width: 880px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1 { font-size: 20px; margin: 0 0 6px; }
+  h2 { font-size: 15px; margin: 30px 0 10px; }
+  p.sub { margin: 0 0 16px; color: var(--sub); font-size: 13px; }
+  .status { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--sub); font-size: 13px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .card h3 { margin: 0; font-size: 14px; }
+  .how { margin: 0; color: var(--mut); font-size: 12px; line-height: 1.6; }
+  input[type=date] { padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: #0f1016; color: var(--ink); font: inherit; font-size: 13px; }
+  input[type=text] { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: #0f1016; color: var(--ink); font: inherit; font-size: 13px; }
+  input[type=file] { font-size: 12px; color: var(--sub); }
+  button { padding: 9px 12px; border-radius: 9px; border: 1px solid var(--line); background: #1c1e28; color: var(--ink); font: inherit; font-size: 13px; cursor: pointer; }
+  button.primary { border-color: var(--acc); background: rgba(57,135,229,.16); }
+  button:disabled { opacity: .45; cursor: default; }
+  .out { margin: 0; white-space: pre-wrap; color: var(--sub); font-size: 12px; }
+  .out.err { color: var(--warn); }
+  .log { max-height: 220px; overflow-y: auto; margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #0b0c11; border: 1px solid var(--line); font: 12px/1.6 ui-monospace, Menlo, monospace; color: var(--sub); white-space: pre-wrap; }
+  .opts { display: flex; gap: 14px; flex-wrap: wrap; color: var(--sub); font-size: 13px; margin: 6px 0 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  th { color: var(--mut); font-weight: 500; font-size: 12px; }
+  td.names { color: var(--sub); }
+  td input { width: 100%; }
+  .note { margin-top: 26px; color: var(--mut); font-size: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+  button.danger { border-color: var(--warn); color: var(--warn); }
+  #delConfirm { min-width: 320px; }
+  .ob { border-bottom: 1px solid var(--line); padding: 9px 2px; font-size: 13px; }
+  .ob .meta { color: var(--mut); font-size: 12px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .ob .meta b { color: var(--sub); font-weight: 500; }
+  .ob .flag { color: var(--warn); }
+  .ob .pre { color: var(--sub); font-size: 12px; white-space: pre-wrap; margin: 4px 0 0; }
+  .ob pre { max-height: 320px; overflow: auto; background: #0b0c11; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font: 12px/1.6 ui-monospace, Menlo, monospace; color: var(--sub); white-space: pre-wrap; }
+  .ob button { padding: 3px 8px; font-size: 12px; }
+  .hint { margin: 0 0 12px; padding: 10px 12px; border: 1px solid rgba(232,163,127,.35); border-radius: 10px; color: var(--sub); font-size: 12.5px; }
+  .hint b { color: var(--warn); font-weight: 600; }
+  #placeTable td.pname b { display: block; font-weight: 600; }
+  #placeTable td.pname small { color: var(--mut); font: 11px ui-monospace, Menlo, monospace; }
+  #placeTable td.pmeta { color: var(--sub); font-size: 12px; white-space: nowrap; }
+  #placeTable .grp { color: var(--mut); font-size: 12px; padding-top: 14px; }
+  #placeTable .saved { color: var(--mut); font-size: 12px; }
+  @media (max-width: 640px) {
+    #placeTable thead { display: none; }
+    #placeTable tr { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+    #placeTable td { border: 0; padding: 0; }
+    #placeTable td.pmeta { grid-column: 1 / -1; white-space: normal; }
+    #placeTable td.pin { grid-column: 1; }
+    #placeTable td.grp { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>내 기록 넣기</h1>
+  <p class="sub">이 화면은 core 서버를 켠 컴퓨터에서 열고, 다른 컴퓨터에서는 서버를 켤 때 나온 토큰이 있어야 열립니다. 올린 파일과 실명은 이 컴퓨터의 프로필 폴더에만 남고, 밖(OpenRouter)으로 나가는 것은 가명·가리기를 거친 문장뿐입니다.</p>
+  <div class="status" id="status">프로필 상태를 불러오는 중</div>
+
+  <h2>1. 기록 파일 올리기</h2>
+  <div class="grid">
+    <div class="card" data-source="kakao">
+      <h3>카카오톡</h3>
+      <p class="how">대화방 → 메뉴 → 대화 내용 → 대화 내보내기 → 텍스트. txt·csv 여러 개나 zip 을 올립니다.</p>
+      <input type="text" name="me" placeholder="카카오톡에 표시되는 본인 이름" autocomplete="off">
+      <input type="file" multiple accept=".txt,.csv,.zip">
+      <button>가져오기</button><p class="out"></p>
+    </div>
+    <div class="card" data-source="sms">
+      <h3>문자</h3>
+      <p class="how">안드로이드: "SMS Backup &amp; Restore" 앱의 XML. 아이폰: 아이클라우드 메시지를 켠 맥의 chat.db 복사본.</p>
+      <input type="file" multiple accept=".xml,.db,.zip">
+      <button>가져오기</button><p class="out"></p>
+    </div>
+    <div class="card" data-source="instagram">
+      <h3>인스타그램</h3>
+      <p class="how">설정 → 계정 센터 → 내 정보 다운로드 → JSON 형식. 받은 zip 을 그대로 올립니다.</p>
+      <input type="file" accept=".zip">
+      <button>가져오기</button><p class="out"></p>
+    </div>
+    <div class="card" data-source="photos">
+      <h3>사진</h3>
+      <p class="how">jpg·png·heic 여러 장이나 zip. 촬영 시각과 위치(EXIF)를 읽고, 위치는 밖으로 보내지 않습니다.</p>
+      <input type="file" multiple accept="image/*,.heic,.zip">
+      <button>가져오기</button><p class="out"></p>
+    </div>
+  </div>
+
+  <h2>1-2. 흔적 기록 올리기 (선택)</h2>
+  <p class="sub">글로 쓰지 않았지만 기기와 서비스에 남은 기록입니다. 각 서비스의 "내 데이터 다운로드" 파일을 그대로 올리고, 받은 zip 을 풀 필요는 없습니다. 기록 처리 때 정서 채점과 주제 묶기에서는 빠지고, 키워드 검색의 근거로 쓰입니다.</p>
+  <div class="opts">
+    <label>가져올 기간 <input type="date" id="traceSince"> ~ <input type="date" id="traceUntil"></label>
+    <span>유튜브·스포티파이처럼 몇 년 치가 쌓인 곳은 기간을 정하면 빨라집니다.</span>
+  </div>
+  <div class="grid">
+    <div class="card" data-source="google" data-trace>
+      <h3>구글 (유튜브·검색·지도)</h3>
+      <p class="how">takeout.google.com 에서 YouTube 기록과 내 활동(검색)을 JSON 형식으로 내보내기. 받은 zip 을 올리면 유튜브 시청·검색·예전 위치 기록을 한 번에 읽습니다.</p>
+      <input type="file" multiple accept=".zip,.json,.html">
+      <button>가져오기</button><p class="out"></p>
+    </div>
+    <div class="card" data-source="maps" data-trace>
+      <h3>구글 지도 타임라인</h3>
+      <p class="how">휴대폰 설정 → 위치 → 위치 서비스 → 타임라인 → 타임라인 데이터 내보내기로 만든 Timeline.json. 좌표는 밖으로 보내지 않습니다.</p>
+      <input type="file" multiple accept=".json,.zip">
+      <button>가져오기</button><p class="out"></p>
+    </div>
+    <div class="card" data-source="card" data-trace>
+      <h3>카드 이용내역</h3>
+      <p class="how">카드사 홈페이지·앱 → 이용내역 조회 → 엑셀(xlsx·xls)이나 CSV 저장. 삼성페이 결제도 연결한 카드의 내역에 나옵니다. 카드 번호는 저장하지 않습니다.</p>
+      <input type="file" multiple accept=".xlsx,.xls,.csv,.zip">
+      <button>가져오기</button><p class="out"></p>
+    </div>
+    <div class="card" data-source="health" data-trace>
+      <h3>건강 (삼성 헬스·애플 건강)</h3>
+      <p class="how">삼성 헬스 → 설정 → 개인 데이터 다운로드 폴더를 zip 으로, 또는 아이폰 건강 앱 → 프로필 → 모든 건강 데이터 내보내기 zip. 하루 한 건(걸음·잠·운동)으로 모읍니다.</p>
+      <input type="file" multiple accept=".zip,.csv,.xml">
+      <button>가져오기</button><p class="out"></p>
+    </div>
+    <div class="card" data-source="spotify" data-trace>
+      <h3>스포티파이</h3>
+      <p class="how">계정 → 개인정보 보호 설정 → 데이터 다운로드로 받은 zip (StreamingHistory JSON). 30초 넘게 들은 곡만 씁니다.</p>
+      <input type="file" multiple accept=".zip,.json">
+      <button>가져오기</button><p class="out"></p>
+    </div>
+    <div class="card" data-source="netflix" data-trace>
+      <h3>넷플릭스</h3>
+      <p class="how">계정 → 개인 정보 다운로드로 받은 zip 이나 그 안의 ViewingActivity.csv. 예고편과 1분 미만 재생은 뺍니다.</p>
+      <input type="file" multiple accept=".zip,.csv">
+      <button>가져오기</button><p class="out"></p>
+    </div>
+  </div>
+
+  <h2>2. 기록 처리하기</h2>
+  <p class="sub">문장 벡터·정서·주제 묶음·관계를 계산합니다. 기록 700건 기준 몇 분 걸리고, 이미 계산한 기록은 건너뜁니다.</p>
+  <div class="opts">
+    <label><input type="checkbox" id="optPii" checked> 본문 속 다른 사람 이름 가리기</label>
+    <label><input type="checkbox" id="optCluster" checked> 주제 묶기</label>
+    <label><input type="checkbox" id="optEnt" checked> 사람·장소 관계 추출</label>
+  </div>
+  <button class="primary" id="buildBtn">처리 시작</button>
+  <div class="log" id="log" hidden></div>
+
+  <h2>3. 사람 관계 붙이기</h2>
+  <p class="sub">가명에 관계를 붙이면 이야기와 대화에서 "지인D" 대신 "회사 동기"처럼 부릅니다. 실명은 쓰지 마세요.</p>
+  <table>
+    <thead><tr><th>가명</th><th>원래 이름·번호 (이 화면에만)</th><th>기록</th><th>관계</th><th></th></tr></thead>
+    <tbody id="people"><tr><td colspan="5" class="names">불러오는 중</td></tr></tbody>
+  </table>
+
+  <h2 id="places">3-2. 장소 이름 붙이기</h2>
+  <p class="sub">휴대폰 타임라인 내보내기에는 장소 이름이 없어서, 집·직장이 아닌 곳은 "이름 없는 장소"나 근처에서 찍은 사진으로 부릅니다. 이름을 붙이면 발견 문장과 이야기에서 그 이름으로 부릅니다. 이름을 비우고 저장하면 붙인 이름을 지웁니다.</p>
+  <p class="hint"><b>주소는 적지 마세요.</b> 이 이름은 이야기를 쓸 때 밖(OpenRouter)으로 나갈 수 있습니다. 집 주소, 동·호수, 번지 대신 "단골 카페", "망원한강공원"처럼 부르는 이름을 적어 주세요. 집과 직장은 늘 "집"·"직장"으로만 부릅니다.</p>
+  <table id="placeTable">
+    <thead><tr><th>장소</th><th>간 날 · 기간 · 주로 간 때</th><th>부를 이름</th><th></th></tr></thead>
+    <tbody id="placeRows"><tr><td colspan="4" class="names">불러오는 중</td></tr></tbody>
+  </table>
+
+  <h2>4. 밖으로 나간 글</h2>
+  <p class="sub">core 가 OpenRouter 로 보낸 요청과, 이야기·대화용으로 브라우저에 넘겨 브라우저가 보낸 프롬프트를 모두 이 컴퓨터에 남깁니다 (30일 보관). 보내기 직전에 가명표의 실명과 전화번호 같은 값이 남아 있는지 한 번 더 찾아 바꾸고, 바꾼 일이 있으면 아래에 표시합니다.</p>
+  <div class="status" id="obSummary">불러오는 중</div>
+  <table id="obPurpose" hidden>
+    <thead><tr><th>용도</th><th>보낸 곳</th><th>요청</th><th>글자</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <div id="obRecent"></div>
+
+  <h2 id="shares">4-2. 공유한 카드</h2>
+  <p class="sub">발견 문장·책 표지·이야기 대목으로 만든 공유 카드입니다. 카드와 공유 페이지(<code>/s/번호</code>)는 이 컴퓨터에 있고, 링크를 받은 사람이 열면 카드 그림과 그 글이 보입니다. 지우면 그 링크는 더 이상 열리지 않습니다. 이미 내려받아 올린 그림이나 내보낸 사본은 따로 지워야 합니다.</p>
+  <div id="shareRows"><p class="out">불러오는 중</p></div>
+
+  <h2>5. 내 기록 지우기</h2>
+  <p class="sub">이 프로필의 기록, 가명표, 계산 결과, 정답 라벨, 올린 파일, 음악·영상, 전송 로그, 공유 카드를 모두 지웁니다. 되돌릴 수 없습니다. 웹 앱에 저장해 둔 이야기와 대화 답도 지운 기록의 것이면 더 이상 보여 주지 않습니다.</p>
+  <div class="opts">
+    <input type="text" id="delConfirm" placeholder="확인을 위해 프로필 이름을 적어 주세요" autocomplete="off">
+    <button class="danger" id="delBtn">모두 지우기</button>
+  </div>
+  <p class="out" id="delOut"></p>
+
+  <p class="note">다 넣었으면 웹 앱(<a href="http://127.0.0.1:5173" style="color:var(--acc)">127.0.0.1:5173</a>)의 노벨·대화에서 "내 기록"을 고르고, INSIGHT 에서 흐름을 확인합니다.</p>
+</main>
+<script>
+"use strict";
+// 다른 컴퓨터에서 ?token= 을 붙여 열었으면 모든 요청에 같은 토큰을 붙인다
+(() => {
+  const token = new URLSearchParams(location.search).get('token');
+  if (!token) return;
+  const orig = window.fetch.bind(window);
+  window.fetch = (url, init = {}) => orig(url, { ...init, headers: { ...(init.headers || {}), 'X-Virtueme-Token': token } });
+})();
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+async function refreshStatus() {
+  try {
+    const h = await (await fetch('health')).json();
+    const dr = h.date_range || [];
+    $('#status').textContent = `프로필 ${h.profile} · 기록 ${h.records}건` + (h.records ? ` · ${String(dr[0] || '').slice(0, 10)} ~ ${String(dr[1] || '').slice(0, 10)}` : '') +
+      ` · ${h.built ? '처리 완료' : '아직 처리 전'}` + (h.models && h.models.llm ? '' : ' · OpenRouter 키 없음 (LLM 단계는 로컬 계산으로 대체)');
+    $('#delConfirm').placeholder = `확인을 위해 프로필 이름(${h.profile})을 적어 주세요`;
+  } catch (e) { $('#status').textContent = 'core 서버에 연결하지 못했습니다'; }
+}
+
+document.querySelectorAll('.card').forEach((card) => {
+  const btn = $('button', card), out = $('.out', card), input = $('input[type=file]', card);
+  btn.onclick = async () => {
+    if (!input.files.length) { out.className = 'out err'; out.textContent = '파일을 먼저 고르세요'; return; }
+    const fd = new FormData();
+    [...input.files].forEach((f) => fd.append('files', f, f.name));
+    const me = $('input[name=me]', card);
+    if (me) fd.append('me', me.value.trim());
+    if (card.hasAttribute('data-trace')) {
+      if ($('#traceSince').value) fd.append('since', $('#traceSince').value);
+      if ($('#traceUntil').value) fd.append('until', $('#traceUntil').value);
+    }
+    btn.disabled = true; out.className = 'out'; out.textContent = '파일 전송 중';
+    try {
+      const r = await fetch('import/' + card.dataset.source, { method: 'POST', body: fd });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || ('HTTP ' + r.status));
+      out.textContent = d.lines.join('\n') + `\n→ 전체 기록 ${d.total_records}건. 다음은 2. 기록 처리하기`;
+      refreshStatus(); loadPeople();
+    } catch (e) { out.className = 'out err'; out.textContent = String(e.message || e); }
+    finally { btn.disabled = false; }
+  };
+});
+
+let polling = null;
+async function pollBuild() {
+  const st = await (await fetch('build/status')).json();
+  const log = $('#log');
+  if (st.state !== 'idle') log.hidden = false;
+  log.textContent = (st.lines || []).join('\n') + (st.state === 'running' ? `\n기록 처리 중 · ${Math.round(st.elapsed || 0)}초` :
+    st.state === 'done' ? `\n처리 완료 (${st.elapsed}초)` : st.state === 'error' ? `\n오류: ${st.error}` : '');
+  log.scrollTop = log.scrollHeight;
+  $('#buildBtn').disabled = st.state === 'running';
+  if (st.state === 'running') { polling = setTimeout(pollBuild, 2000); } else { polling = null; refreshStatus(); loadPeople(); loadPlaces(); }
+}
+$('#buildBtn').onclick = async () => {
+  await fetch('build', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pii: $('#optPii').checked, cluster: $('#optCluster').checked, entities: $('#optEnt').checked }) });
+  if (!polling) pollBuild();
+};
+
+async function loadPeople() {
+  const d = await (await fetch('people/local')).json();
+  const rows = d.people || [];
+  $('#people').innerHTML = rows.length ? rows.map((p) => `<tr data-alias="${esc(p.alias)}">
+      <td>${esc(p.alias)}</td><td class="names">${esc(p.names.join(', '))}</td><td>${p.records}</td>
+      <td><input type="text" value="${esc(p.relation || '')}" placeholder="예: 회사 동기"></td>
+      <td><button>저장</button></td></tr>`).join('') : '<tr><td colspan="5" class="names">아직 가져온 대화가 없습니다</td></tr>';
+  document.querySelectorAll('#people tr[data-alias]').forEach((tr) => {
+    $('button', tr).onclick = async () => {
+      const r = await fetch('people/relation', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ alias: tr.dataset.alias, relation: $('input', tr).value.trim() }) });
+      $('button', tr).textContent = r.ok ? '저장됨' : '실패';
+    };
+  });
+}
+
+// 장소: /columns 의 집·직장, 자주 간 곳, 처음 간 곳. 좌표는 보여 주지 않는다 (장소 키는 지도 ID 나 격자 해시)
+const ADDRESSY = /\d+\s*(번지|동|호)(?![가-힣])|[가-힣](로|길)\s*\d+|\d{2,}-\d+/;
+async function loadPlaces() {
+  const tb = $('#placeRows');
+  let p;
+  try {
+    const r = await fetch('columns');
+    p = (await r.json()).places;
+  } catch (e) { tb.innerHTML = '<tr><td colspan="4" class="names">장소를 불러오지 못했습니다</td></tr>'; return; }
+  if (!p) { tb.innerHTML = '<tr><td colspan="4" class="names">아직 장소 기록이 없습니다 (지도 타임라인·사진 위치)</td></tr>'; return; }
+  const seen = new Set();
+  const groups = [['집·직장', p.anchors || []], ['자주 간 곳', p.regular || []], ['처음 간 곳', p.first_visits || []]];
+  const md = (d) => { const [, m, dd] = String(d).split('-').map(Number); return `${m}월 ${dd}일`; };
+  let html = '';
+  for (const [label, list] of groups) {
+    const rows = list.filter((x) => !seen.has(x.key) && seen.add(x.key));
+    if (!rows.length) continue;
+    html += `<tr><td colspan="4" class="grp">${label}</td></tr>`;
+    html += rows.map((x) => {
+      const fixed = x.name === '집' || x.name === '직장';
+      const period = x.first === x.last ? md(x.first) : `${md(x.first)} ~ ${md(x.last)}`;
+      return `<tr data-key="${esc(x.key)}">
+        <td class="pname"><b>${esc(x.name)}</b><small>${esc(x.key)}</small></td>
+        <td class="pmeta">${x.visits}일 · ${period}${x.time_band ? ' · ' + esc(x.time_band) : ''}</td>
+        ${fixed ? '<td class="pin saved" colspan="2">바꾸지 않음</td>'
+          : `<td class="pin"><input type="text" maxlength="40" value="${x.named ? esc(x.name) : ''}" placeholder="예: 단골 카페"></td><td><button>저장</button></td>`}
+      </tr>`;
+    }).join('');
+  }
+  tb.innerHTML = html || '<tr><td colspan="4" class="names">아직 장소 기록이 없습니다</td></tr>';
+  tb.querySelectorAll('tr[data-key]').forEach((tr) => {
+    const btn = $('button', tr); if (!btn) return;
+    const input = $('input', tr);
+    btn.onclick = async () => {
+      const name = input.value.trim();
+      if (ADDRESSY.test(name) && !confirm('주소처럼 보입니다. 이 이름은 이야기를 쓸 때 밖으로 나갈 수 있습니다. 그래도 저장할까요?')) return;
+      btn.disabled = true;
+      try {
+        const r = await fetch('places/name', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: tr.dataset.key, name: name || null }) });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const d = await r.json();
+        const all = Object.values(d.places || {}).flat().filter((x) => x && x.key);
+        const now = all.find((x) => x.key === tr.dataset.key);
+        btn.textContent = name ? '저장됨' : '지움';
+        $('b', tr).textContent = now ? now.name : (name || '이름 없는 장소');
+      } catch (e) { btn.textContent = '실패'; }
+      finally { btn.disabled = false; }
+    };
+    input.addEventListener('input', () => { btn.textContent = '저장'; });
+  });
+}
+
+const CHANNEL = { core: 'core → OpenRouter', browser: '브라우저 → OpenRouter', share: '공유 카드 (링크를 연 사람이 봄)' };
+const num = (n) => Number(n || 0).toLocaleString('ko-KR');
+async function loadOutbound() {
+  const d = await (await fetch('outbound?days=7')).json();
+  $('#obSummary').innerHTML = d.requests
+    ? `최근 ${d.days}일 요청 ${num(d.requests)}건 · 글자 ${num(d.chars)}자 · ` +
+      (d.guarded_requests ? `<span style="color:var(--warn)">마지막 검사에서 값을 바꿔 보낸 요청 ${d.guarded_requests}건 (${esc(d.guarded_kinds.join(', '))})</span>`
+                          : '마지막 검사에서 바꾼 값 없음')
+    : `최근 ${d.days}일 동안 밖으로 나간 글이 없습니다`;
+  const tb = $('#obPurpose tbody');
+  $('#obPurpose').hidden = !d.by_purpose.length;
+  tb.innerHTML = d.by_purpose.map((g) => `<tr><td>${esc(g.purpose)}</td><td class="names">${CHANNEL[g.channel] || esc(g.channel)}</td>` +
+    `<td>${num(g.requests)}</td><td>${num(g.chars)}</td></tr>`).join('');
+  $('#obRecent').innerHTML = d.recent.map((e) => `<div class="ob" data-id="${esc(e.id)}">
+      <div class="meta"><b>${esc(e.ts.replace('T', ' '))}</b><span>${esc(e.purpose)}</span><span>${CHANNEL[e.channel] || ''}</span>
+        <span>${num(e.chars)}자</span>${e.guarded.length ? `<span class="flag">바꿔 보냄: ${esc(e.guarded.join(', '))}</span>` : ''}
+        <button>전체 보기</button></div>
+      <p class="pre">${esc(e.preview)}</p></div>`).join('');
+  document.querySelectorAll('#obRecent .ob').forEach((row) => {
+    $('button', row).onclick = async () => {
+      const old = $('pre', row);
+      if (old) { old.remove(); return; }
+      const it = await (await fetch('outbound/item?id=' + encodeURIComponent(row.dataset.id))).json();
+      const pre = document.createElement('pre');
+      pre.textContent = `[지시문]\n${it.system || ''}\n\n[보낸 글]\n${it.user || '(없음: 사용자가 친 말만 브라우저가 붙여 보냄)'}` +
+        (it.truncated ? '\n\n(로그에는 앞 40,000자만 남겼습니다)' : '');
+      row.appendChild(pre);
+    };
+  });
+}
+
+async function loadShares() {
+  const box = $('#shareRows');
+  let d;
+  try { d = await (await fetch('share')).json(); } catch (e) { box.innerHTML = '<p class="out err">공유 목록을 불러오지 못했습니다</p>'; return; }
+  const rows = d.shares || [];
+  if (!rows.length) { box.innerHTML = '<p class="out">아직 공유한 카드가 없습니다</p>'; return; }
+  box.innerHTML = rows.map((s) => {
+    const text = s.kind === 'passage' ? (s.lines || []).join(' ') : s.kind === 'book' ? `「${s.title || ''}」` : (s.text || '');
+    const r = s.reactions || { total: 0 };
+    return `<div class="ob share" data-id="${esc(s.id)}">
+      <div class="meta"><b>${esc(String(s.created).replace('T', ' '))}</b><span>${esc(s.kind_ko)}</span><span>반응 ${num(r.total)}개</span>
+        ${(s.privacy && s.privacy.replaced.length) ? `<span class="flag">바꿔 실음: ${esc(s.privacy.replaced.join(', '))}</span>` : ''}
+        <a href="s/${esc(s.id)}" target="_blank" rel="noopener" style="color:var(--acc)">페이지 열기</a>
+        <button class="danger">지우기</button></div>
+      <p class="pre">${esc(text)}</p></div>`;
+  }).join('');
+  box.querySelectorAll('.ob.share').forEach((row) => {
+    $('button', row).onclick = async () => {
+      if (!confirm('이 공유를 지울까요? 링크가 더 이상 열리지 않습니다.')) return;
+      const r = await fetch('share/' + row.dataset.id + '/delete', { method: 'POST' });
+      if (r.ok) loadShares(); else $('button', row).textContent = '실패';
+    };
+  });
+}
+
+$('#delBtn').onclick = async () => {
+  const out = $('#delOut');
+  out.className = 'out';
+  const confirmName = $('#delConfirm').value.trim();
+  if (!confirmName) { out.className = 'out err'; out.textContent = '확인란에 프로필 이름을 적어 주세요'; return; }
+  $('#delBtn').disabled = true;
+  try {
+    const r = await fetch('profile/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ confirm: confirmName }) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || ('HTTP ' + r.status));
+    out.textContent = `기록 ${num(d.records)}건과 가명 ${num(d.people)}개를 지웠습니다` + (d.folders.length ? ` (${d.folders.join(', ')} 폴더 포함)` : '');
+    $('#delConfirm').value = '';
+    refreshStatus(); loadPeople(); loadOutbound(); loadShares();
+  } catch (e) { out.className = 'out err'; out.textContent = String(e.message || e); }
+  finally { $('#delBtn').disabled = false; }
+};
+
+refreshStatus(); loadPeople(); pollBuild(); loadOutbound(); loadPlaces(); loadShares();
+</script>
+</body>
+</html>
